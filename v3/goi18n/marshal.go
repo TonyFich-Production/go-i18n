@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"path/filepath"
+	"unsafe"
 
 	"github.com/BurntSushi/toml"
 	"golang.org/x/text/language"
@@ -26,16 +26,7 @@ func writeFile(outdir, label string, langTag language.Tag, format string, messag
 }
 
 func convertTemplates(in map[i18n.MessageID]*i18n.MessageTemplate) map[string]*i18n.MessageTemplate {
-	out := make(map[string]*i18n.MessageTemplate, len(in))
-	for k, v := range in {
-		out[string(k)] = v
-	}
-
-	log.Printf("in:  %+v", in)
-	log.Printf("out: %+v", out)
-
-	return out
-	// return *(*map[string]*i18n.MessageTemplate)(unsafe.Pointer(&in))
+	return *(*map[string]*i18n.MessageTemplate)(unsafe.Pointer(&in))
 }
 
 func marshalValue(messageTemplates map[string]*i18n.MessageTemplate, sourceLanguage bool) interface{} {
