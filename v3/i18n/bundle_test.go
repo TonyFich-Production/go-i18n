@@ -7,7 +7,7 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"golang.org/x/text/language"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 var simpleMessage = MustNewMessage(map[string]string{
@@ -228,7 +228,7 @@ func TestV1FlatFormat(t *testing.T) {
 	expectMessage(t, bundle, language.AmericanEnglish, "everything", &e)
 }
 
-func expectMessage(t *testing.T, bundle *Bundle, tag language.Tag, messageID string, message *Message) {
+func expectMessage(t *testing.T, bundle *Bundle, tag language.Tag, messageID MessageID, message *Message) {
 	expected := NewMessageTemplate(message)
 	actual := bundle.messageTemplates[tag][messageID]
 	if !reflect.DeepEqual(actual, expected) {

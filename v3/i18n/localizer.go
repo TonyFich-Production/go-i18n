@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/nicksnyder/go-i18n/v2/internal/plural"
 	"golang.org/x/text/language"
+
+	"github.com/nicksnyder/go-i18n/v3/internal/plural"
 )
 
 // Localizer provides Localize and MustLocalize methods that return localized messages.
@@ -49,11 +50,14 @@ func parseTags(langs []string) []language.Tag {
 	return tags
 }
 
+// MessageID is a simple alias to string, helping automation tools like linters to find all the messages.
+type MessageID string
+
 // LocalizeConfig configures a call to the Localize method on Localizer.
 type LocalizeConfig struct {
 	// MessageID is the id of the message to lookup.
 	// This field is ignored if DefaultMessage is set.
-	MessageID string
+	MessageID MessageID
 
 	// TemplateData is the data passed when executing the message's template.
 	// If TemplateData is nil and PluralCount is not nil, then the message template
@@ -71,7 +75,7 @@ type LocalizeConfig struct {
 }
 
 type invalidPluralCountErr struct {
-	messageID   string
+	messageID   MessageID
 	pluralCount interface{}
 	err         error
 }
@@ -83,7 +87,7 @@ func (e *invalidPluralCountErr) Error() string {
 // MessageNotFoundErr is returned from Localize when a message could not be found.
 type MessageNotFoundErr struct {
 	tag       language.Tag
-	messageID string
+	messageID MessageID
 }
 
 func (e *MessageNotFoundErr) Error() string {
@@ -100,8 +104,8 @@ func (e *pluralizeErr) Error() string {
 }
 
 type messageIDMismatchErr struct {
-	messageID        string
-	defaultMessageID string
+	messageID        MessageID
+	defaultMessageID MessageID
 }
 
 func (e *messageIDMismatchErr) Error() string {
@@ -178,7 +182,7 @@ func (l *Localizer) LocalizeWithTag(lc *LocalizeConfig) (string, language.Tag, e
 	return msg, tag, err
 }
 
-func (l *Localizer) getMessageTemplate(id string, defaultMessage *Message) (language.Tag, *MessageTemplate, error) {
+func (l *Localizer) getMessageTemplate(id MessageID, defaultMessage *Message) (language.Tag, *MessageTemplate, error) {
 	_, i, _ := l.bundle.matcher.Match(l.tags...)
 	tag := l.bundle.tags[i]
 	mt := l.bundle.getMessageTemplate(tag, id)

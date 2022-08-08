@@ -8,7 +8,7 @@ import (
 // Message is a string that can be localized.
 type Message struct {
 	// ID uniquely identifies the message.
-	ID string
+	ID MessageID
 
 	// Hash uniquely identifies the content of the message
 	// that this message was translated from.
@@ -70,7 +70,7 @@ func (m *Message) unmarshalInterface(v interface{}) error {
 	for k, v := range strdata {
 		switch strings.ToLower(k) {
 		case "id":
-			m.ID = v
+			m.ID = MessageID(v)
 		case "description":
 			m.Description = v
 		case "hash":

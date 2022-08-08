@@ -76,7 +76,7 @@ func recGetMessages(raw interface{}, isMapMessage, isInitialCall bool) ([]*Messa
 		messages = make([]*Message, 0, len(data))
 		for id, data := range data {
 			// recursively scan map items
-			messages, err = addChildMessages(id, data, messages)
+			messages, err = addChildMessages(MessageID(id), data, messages)
 			if err != nil {
 				return nil, err
 			}
@@ -94,7 +94,7 @@ func recGetMessages(raw interface{}, isMapMessage, isInitialCall bool) ([]*Messa
 				return nil, fmt.Errorf("expected key to be string but got %#v", id)
 			}
 			// recursively scan map items
-			messages, err = addChildMessages(strid, data, messages)
+			messages, err = addChildMessages(MessageID(strid), data, messages)
 			if err != nil {
 				return nil, err
 			}
@@ -119,7 +119,7 @@ func recGetMessages(raw interface{}, isMapMessage, isInitialCall bool) ([]*Messa
 	return messages, nil
 }
 
-func addChildMessages(id string, data interface{}, messages []*Message) ([]*Message, error) {
+func addChildMessages(id MessageID, data interface{}, messages []*Message) ([]*Message, error) {
 	isChildMessage := isMessage(data)
 	childMessages, err := recGetMessages(data, isChildMessage, false)
 	if err != nil {

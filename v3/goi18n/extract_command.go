@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"github.com/nicksnyder/go-i18n/v3/i18n"
 )
 
 func usageExtract() {
@@ -103,7 +103,7 @@ func (ec *extractCommand) execute() error {
 			return err
 		}
 	}
-	messageTemplates := map[string]*i18n.MessageTemplate{}
+	messageTemplates := map[i18n.MessageID]*i18n.MessageTemplate{}
 	for _, m := range messages {
 		if mt := i18n.NewMessageTemplate(m); mt != nil {
 			messageTemplates[m.ID] = mt
@@ -282,7 +282,7 @@ func extractStringLiteral(expr ast.Expr) (string, bool) {
 
 func i18nPackageName(file *ast.File) string {
 	for _, i := range file.Imports {
-		if i.Path.Kind == token.STRING && i.Path.Value == `"github.com/nicksnyder/go-i18n/v2/i18n"` {
+		if i.Path.Kind == token.STRING && i.Path.Value == `"github.com/nicksnyder/go-i18n/v3/i18n"` {
 			if i.Name == nil {
 				return "i18n"
 			}
