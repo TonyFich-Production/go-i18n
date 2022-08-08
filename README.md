@@ -16,12 +16,12 @@ go-i18n is a Go [package](#package-i18n) and a [command](#command-goi18n) that h
 </strong>
 
 ## Package i18n
-[![GoDoc](https://godoc.org/github.com/nicksnyder/go-i18n?status.svg)](https://godoc.org/github.com/nicksnyder/go-i18n/v2/i18n)
+[![GoDoc](https://godoc.org/github.com/nicksnyder/go-i18n?status.svg)](https://godoc.org/github.com/nicksnyder/go-i18n/v3/i18n)
 
 The i18n package provides support for looking up messages according to a set of locale preferences.
 
 ```go
-import "github.com/nicksnyder/go-i18n/v2/i18n"
+import "github.com/nicksnyder/go-i18n/v3/i18n"
 ```
 
 Create a Bundle to use for the lifetime of your application.

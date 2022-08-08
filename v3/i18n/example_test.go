@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/BurntSushi/toml"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
+
+	"github.com/nicksnyder/go-i18n/v3/i18n"
 )
 
 func ExampleLocalizer_MustLocalize() {

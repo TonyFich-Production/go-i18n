@@ -10,11 +10,12 @@ import (
 	"os"
 
 	"github.com/BurntSushi/toml"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
-	"github.com/nicksnyder/go-i18n/v2/internal"
-	"github.com/nicksnyder/go-i18n/v2/internal/plural"
 	"golang.org/x/text/language"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
+
+	"github.com/nicksnyder/go-i18n/v3/i18n"
+	"github.com/nicksnyder/go-i18n/v3/internal"
+	"github.com/nicksnyder/go-i18n/v3/internal/plural"
 )
 
 func usageMerge() {
@@ -111,8 +112,8 @@ type fileSystemOp struct {
 }
 
 func merge(messageFiles map[string][]byte, sourceLanguageTag language.Tag, outdir, outputFormat string) (*fileSystemOp, error) {
-	unmerged := make(map[language.Tag][]map[string]*i18n.MessageTemplate)
-	sourceMessageTemplates := make(map[string]*i18n.MessageTemplate)
+	unmerged := make(map[language.Tag][]map[i18n.MessageID]*i18n.MessageTemplate)
+	sourceMessageTemplates := make(map[i18n.MessageID]*i18n.MessageTemplate)
 	unmarshalFuncs := map[string]i18n.UnmarshalFunc{
 		"json": json.Unmarshal,
 		"toml": toml.Unmarshal,
@@ -123,7 +124,7 @@ func merge(messageFiles map[string][]byte, sourceLanguageTag language.Tag, outdi
 		if err != nil {
 			return nil, fmt.Errorf("failed to load message file %s: %s", path, err)
 		}
-		templates := map[string]*i18n.MessageTemplate{}
+		templates := map[i18n.MessageID]*i18n.MessageTemplate{}
 		for _, m := range mf.Messages {
 			template := i18n.NewMessageTemplate(m)
 			if template == nil {
@@ -148,7 +149,7 @@ func merge(messageFiles map[string][]byte, sourceLanguageTag language.Tag, outdi
 	}
 
 	pluralRules := plural.DefaultRules()
-	all := make(map[language.Tag]map[string]*i18n.MessageTemplate)
+	all := make(map[language.Tag]map[i18n.MessageID]*i18n.MessageTemplate)
 	all[sourceLanguageTag] = sourceMessageTemplates
 	for _, srcTemplate := range sourceMessageTemplates {
 		for dstLangTag, messageTemplates := range unmerged {
@@ -162,7 +163,7 @@ func merge(messageFiles map[string][]byte, sourceLanguageTag language.Tag, outdi
 				continue
 			}
 			if all[dstLangTag] == nil {
-				all[dstLangTag] = make(map[string]*i18n.MessageTemplate)
+				all[dstLangTag] = make(map[i18n.MessageID]*i18n.MessageTemplate)
 			}
 			dstMessageTemplate := all[dstLangTag][srcTemplate.ID]
 			if dstMessageTemplate == nil {
@@ -200,10 +201,10 @@ func merge(messageFiles map[string][]byte, sourceLanguageTag language.Tag, outdi
 		}
 	}
 
-	translate := make(map[language.Tag]map[string]*i18n.MessageTemplate)
-	active := make(map[language.Tag]map[string]*i18n.MessageTemplate)
+	translate := make(map[language.Tag]map[i18n.MessageID]*i18n.MessageTemplate)
+	active := make(map[language.Tag]map[i18n.MessageID]*i18n.MessageTemplate)
 	for langTag, messageTemplates := range all {
-		active[langTag] = make(map[string]*i18n.MessageTemplate)
+		active[langTag] = make(map[i18n.MessageID]*i18n.MessageTemplate)
 		if langTag == sourceLanguageTag {
 			active[langTag] = messageTemplates
 			continue
@@ -219,7 +220,7 @@ func merge(messageFiles map[string][]byte, sourceLanguageTag language.Tag, outdi
 			activeMessageTemplate, translateMessageTemplate := activeDst(srcMessageTemplate, messageTemplate, pluralRule)
 			if translateMessageTemplate != nil {
 				if translate[langTag] == nil {
-					translate[langTag] = make(map[string]*i18n.MessageTemplate)
+					translate[langTag] = make(map[i18n.MessageID]*i18n.MessageTemplate)
 				}
 				translate[langTag][messageTemplate.ID] = translateMessageTemplate
 			}

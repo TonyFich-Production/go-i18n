@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/nicksnyder/go-i18n/v2/internal/plural"
+	"github.com/nicksnyder/go-i18n/v3/internal/plural"
 
 	"golang.org/x/text/language"
 )
@@ -20,7 +20,7 @@ type UnmarshalFunc func(data []byte, v interface{}) error
 type Bundle struct {
 	defaultLanguage  language.Tag
 	unmarshalFuncs   map[string]UnmarshalFunc
-	messageTemplates map[language.Tag]map[string]*MessageTemplate
+	messageTemplates map[language.Tag]map[MessageID]*MessageTemplate
 	pluralRules      plural.Rules
 	tags             []language.Tag
 	matcher          language.Matcher
@@ -99,10 +99,10 @@ func (b *Bundle) AddMessages(tag language.Tag, messages ...*Message) error {
 		return fmt.Errorf("no plural rule registered for %s", tag)
 	}
 	if b.messageTemplates == nil {
-		b.messageTemplates = map[language.Tag]map[string]*MessageTemplate{}
+		b.messageTemplates = map[language.Tag]map[MessageID]*MessageTemplate{}
 	}
 	if b.messageTemplates[tag] == nil {
-		b.messageTemplates[tag] = map[string]*MessageTemplate{}
+		b.messageTemplates[tag] = map[MessageID]*MessageTemplate{}
 		b.addTag(tag)
 	}
 	for _, m := range messages {
@@ -135,7 +135,7 @@ func (b *Bundle) LanguageTags() []language.Tag {
 	return b.tags
 }
 
-func (b *Bundle) getMessageTemplate(tag language.Tag, id string) *MessageTemplate {
+func (b *Bundle) getMessageTemplate(tag language.Tag, id MessageID) *MessageTemplate {
 	templates := b.messageTemplates[tag]
 	if templates == nil {
 		return nil

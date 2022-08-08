@@ -5,8 +5,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nicksnyder/go-i18n/v2/internal/plural"
 	"golang.org/x/text/language"
+
+	"github.com/nicksnyder/go-i18n/v3/internal/plural"
 )
 
 type localizerTest struct {

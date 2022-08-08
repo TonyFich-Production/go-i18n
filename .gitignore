@@ -5,7 +5,7 @@ output/
 *.test
 *.swp
 
-v2/example/example
-v2/goi18n/goi18n
-v2/dist/
-v2/coverage.txt
+v3/example/example
+v3/goi18n/goi18n
+v3/dist/
+v3/coverage.txt
